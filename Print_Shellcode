@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+read -p "Enter the name of object file -> " FILE
+
+echo 
+
+for i in $(objdump -d $FILE | grep "^ " | cut -f2)
+do 
+	echo -n "\x"$i 
+done
+
+echo 
+echo
