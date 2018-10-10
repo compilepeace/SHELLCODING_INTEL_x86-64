@@ -6,7 +6,7 @@
 FILE=test_shellcode
 
 
-all: exit.o	message.o message_stack_method.o message_rip_relative_addressing.o execve_stack_method.o execve_jmpcallpop.o
+all: exit.o	message.o message_stack_method.o message_rip_relative_addressing.o execve_stack_method.o execve_jmpcallpop.o execve_xor_decoder.o execve_not_decoder.o execve_insertion_decoder.o mmx-xordecoder.o
 
 
 exit.o: exit.asm
@@ -29,9 +29,21 @@ execve_stack_method.o: execve_stack_method.asm
 execve_jmpcallpop.o: execve_jmpcallpop.asm
 	nasm -f elf64 $< -o $@
 
+execve_xor_decoder.o: execve_xor_decoder.asm
+	nasm -f elf64 $< -o $@
+
+execve_not_decoder.o: execve_not_decoder.asm
+	nasm -f elf64 $< -o $@
+
+execve_insertion_decoder.o: execve_insertion_decoder.asm
+	nasm -f elf64 $< -o $@
+
+mmx-xordecoder.o: mmx-xordecoder.asm
+	nasm -f elf64 $< -o $@
+
 
 clean:
-	rm exit.o message.o message_stack_method.o message_rip_relative_addressing.o execve_stack_method.o execve_jmpcallpop.o $(FILE) 
+	rm exit.o message.o message_stack_method.o message_rip_relative_addressing.o execve_stack_method.o execve_jmpcallpop.o execve_xor_decoder.o execve_not_decoder.o execve_insertion_decoder.o mmx-xordecoder.o $(FILE) 
 
 
 payload:

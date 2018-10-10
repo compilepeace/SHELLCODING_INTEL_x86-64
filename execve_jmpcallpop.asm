@@ -36,4 +36,4 @@ Main:
 
 PushAdressOfString:
 	call Main
-	shell:	db "/bin/sh", 0x00
+	shell:	db "/bin/sh",0x00
