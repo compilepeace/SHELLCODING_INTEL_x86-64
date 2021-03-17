@@ -1,0 +1,34 @@
+     1                                 %line 1+1 1_defining_data.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 
+    10                                 [segment .data]
+    11 00000000 04000000               a dd 4
+    12 00000004 EC51B840               b dd 5.76
+    13 00000008 00000000<rept>         c times 10 dd 0
+    14 00000030 01000200               d dw 1, 2
+    15 00000034 FB                     e db 0xfb
+    16 00000035 68656C6C6F20416268-    f db "hello Abhinav", 0
+    17 00000035 696E617600         
+    18                                 
+    19                                 [segment .bss]
+    20 00000000 <gap>                  g resd 1
+    21 00000004 <gap>                  h resd 10
+    22 0000002C <gap>                  i resb 100
+    23                                 
+    24                                 [segment .text]
+    25                                 [global _start]
+    26                                 
+    27                                 _start:
+    28 00000000 55                      push rbp
+    29 00000001 4889E5                  mov rbp, rsp
+    30 00000004 4883EC10                sub rsp, 0x10
+    31                                 
+    32 00000008 4831C0                  xor rax, rax
+    33 0000000B C9                      leave
+    34 0000000C C3                      ret

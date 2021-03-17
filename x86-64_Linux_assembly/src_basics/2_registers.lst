@@ -1,0 +1,30 @@
+     1                                 %line 1+1 ./2_registers.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 [segment .data]
+    10 00000000 02000000               p1 dd 2
+    11 00000004 0C000000               p2 dd 0xc
+    12 00000008 FFFFFFFF               p3 dd -1
+    13 0000000C F6FFFFFF               p4 dd -0xa
+    14                                 
+    15                                 [segment .text]
+    16                                 [global _start]
+    17                                 
+    18                                 _start:
+    19 00000000 8B1C25[00000000]        mov ebx, [p1]
+    20 00000007 031C25[00000000]        add ebx, [p2]
+    21 0000000E 8B0C25[00000000]        mov ecx, [p3]
+    22 00000015 030C25[00000000]        add ecx, [p4]
+    23 0000001C 89D8                    mov eax, ebx
+    24 0000001E 01C8                    add eax, ecx
+    25                                 
+    26                                 
+    27                                 
+    28 00000020 48890425[00000000]      mov [p1], rax
+    29 00000028 48630425[00000000]      movsxd rax, dword [p4]
+    30 00000030 480FB71C25[00000000]      movzx rbx, word [p4]
