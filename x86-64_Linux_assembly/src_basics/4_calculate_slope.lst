@@ -1,0 +1,56 @@
+     1                                 %line 1+1 ./4_calculate_slope.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 [segment .data]
+     9 00000000 08000000               x1 dd 8
+    10 00000004 0A000000               y1 dd 10
+    11 00000008 08000000               x2 dd 8
+    12 0000000C 01000000               y2 dd 1
+    13 00000010 0000                   flag dw 0
+    14 00000012 0000000000000000       quo dq 0
+    15                                 
+    16                                 [segment .text]
+    17                                 [global _start]
+    18                                 
+    19                                 _start:
+    20 00000000 55                      push rbp
+    21 00000001 4889E5                  mov rbp, rsp
+    22                                 
+    23                                 
+    24 00000004 41BC00000000            mov r12d, 0
+    25                                 
+    26                                 
+    27 0000000A 8B0425[00000000]        mov eax, dword [x1]
+    28 00000011 2B0425[00000000]        sub eax, dword [x2]
+    29 00000018 66440F442425[000000-     cmovz r12w, word [flag]
+    30 00000018 00]                
+    31 00000022 742B                    jz _exit
+    32                                 
+    33 00000024 4889C3                  mov rbx, rax
+    34                                 
+    35                                 
+    36 00000027 8B0425[00000000]        mov eax, dword [y1]
+    37 0000002E 2B0425[00000000]        sub eax, dword [y2]
+    38 00000035 66440F442425[000000-     cmovz r12w, word [flag]
+    39 00000035 00]                
+    40 0000003F 740E                    jz _exit
+    41                                 
+    42                                 
+    43                                 
+    44 00000041 99                      cdq
+    45 00000042 F7FB                    idiv ebx
+    46 00000044 83F800                  cmp eax, 0
+    47 00000047 7C12                    jl remove_sign
+    48 00000049 48890425[00000000]      mov qword [quo], rax
+    49                                 
+    50                                 _exit:
+    51 00000051 B83C000000              mov eax, 60
+    52 00000056 BF0B000000              mov edi, 0xb
+    53 0000005B 0F05                    syscall
+    54                                 
+    55                                 remove_sign:
+    56 0000005D F7D8                    neg eax

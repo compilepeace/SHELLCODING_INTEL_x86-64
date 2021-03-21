@@ -1,0 +1,38 @@
+     1                                 %line 1+1 ./3_distance_btwn_points.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 
+    10                                 [segment .data]
+    11 00000000 03000000               x1 dd 3
+    12 00000004 0A000000               y1 dd 10
+    13 00000008 08000000               x2 dd 8
+    14 0000000C 01000000               y2 dd 1
+    15                                 
+    16                                 [segment .text]
+    17                                 [global _start]
+    18                                 
+    19                                 _start:
+    20 00000000 55                      push rbp
+    21 00000001 4889E5                  mov rbp, rsp
+    22 00000004 4883EC10                sub rsp, 0x10
+    23                                 
+    24 00000008 8B0425[00000000]        mov eax, dword [x1]
+    25 0000000F 2B0425[00000000]        sub eax, dword [x2]
+    26 00000016 0FAFC0                  imul eax, eax
+    27                                 
+    28 00000019 89C3                    mov ebx, eax
+    29                                 
+    30 0000001B 8B0425[00000000]        mov eax, dword [y1]
+    31 00000022 2B0425[00000000]        sub eax, dword [y2]
+    32 00000029 0FAFC0                  imul eax, eax
+    33                                 
+    34 0000002C 01D8                    add eax, ebx
+    35                                 
+    36 0000002E 4883C410                add rsp, 0x10
+    37 00000032 4889EC                  mov rsp, rbp
+    38 00000035 5D                      pop rbp

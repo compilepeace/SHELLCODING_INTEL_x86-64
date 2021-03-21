@@ -1,0 +1,44 @@
+     1                                 %line 1+1 ./5_grades.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 
+     9                                 
+    10                                 
+    11                                 
+    12                                 
+    13                                 
+    14                                 
+    15                                 [segment .data]
+    16 00000000 62000000               grade1 dd 98
+    17 00000004 5F000000               grade2 dd 95
+    18 00000008 5C000000               grade3 dd 92
+    19 0000000C 58000000               grade4 dd 88
+    20 00000010 00000000               average dd 0
+    21                                 
+    22                                 [segment .text]
+    23                                 [global _start]
+    24                                 
+    25                                 _start:
+    26 00000000 55                      push rbp
+    27 00000001 4889EC                  mov rsp, rbp
+    28 00000004 4883EC16                sub rsp, 0x16
+    29                                 
+    30 00000008 8B0425[00000000]        mov eax, dword [grade1]
+    31 0000000F 030425[00000000]        add eax, dword [grade2]
+    32 00000016 030425[00000000]        add eax, dword [grade3]
+    33 0000001D 030425[00000000]        add eax, dword [grade4]
+    34                                 
+    35 00000024 41BC04000000            mov r12d, 4
+    36 0000002A 31D2                    xor edx, edx
+    37 0000002C 49F7F4                  div r12
+    38                                 
+    39 0000002F 890425[00000000]        mov dword [average], eax
+    40                                 
+    41                                 _exit:
+    42 00000036 B83C000000              mov eax, 60
+    43 0000003B BF0B000000              mov edi, 0xb
+    44 00000040 0F05                    syscall
