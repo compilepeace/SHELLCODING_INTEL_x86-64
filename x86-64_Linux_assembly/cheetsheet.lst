@@ -14,74 +14,74 @@
     14 00000008 0000000000000000       rem dq 0
     15 00000010 CE070000               var1 dd 1998
     16 00000014 0110000000000000       var2 dq 4097
-    17 0000001C 416268696E617600       name db "Abhinav", 0x0
-    18 00000024 0100000000000000<rept>       arr1 times 10 dq 1
-    19 00000074 0700<rept>             arr2 times 5 dw 7
-    20                                 
+    17 0000001C 416268696E61760A00     name db "Abhinav", 0xa, 0x0
+    18 00000025 0100000000000000<rept>       arr1 times 10 dq 1
+    19 00000075 0700<rept>             arr2 times 5 dw 7
+    20 0000007F 0500000000000000<rept>       data times 10 dq 5
     21                                 
-    22                                 [segment .bss]
-    23 00000000 0700<rept>             arr3 times 5 dw 7
-    24                                 
-    25                                 
-    26                                 [segment .text]
-    27                                 [global _start]
-    28                                 
-    29                                 _start:
+    22 000000CF 0000000000000000       idx dq 0x0
+    23 000000D7 [0000000000000000]     switch: dq _start.case0
+    24 000000DF [0000000000000000]      dq _start.case1
+    25 000000E7 [0000000000000000]      dq _start.case2
+    26                                 
+    27                                 
+    28                                 [segment .bss]
+    29 00000000 0700<rept>             arr3 times 5 dw 7
     30                                 
     31                                 
-    32 00000000 4831C0                  xor rax, rax
-    33 00000003 4889C7                  mov rdi, rax
-    34 00000006 40B702                  mov dil, 0x2
-    35 00000009 48C7C6[00000000]        mov rsi, name
-    36 00000010 4831D2                  xor rdx, rdx
-    37 00000013 4883C208                add rdx, 8
-    38 00000017 48C7C001000000          mov rax, 1
-    39 0000001E 0F05                    syscall
-    40                                 
-    41                                 
-    42                                 
-    43                                 
-    44                                 
-    45 00000020 48C7C302000000          mov rbx, 0x2
-    46 00000027 48F7DB                  neg rbx
-    47 0000002A F71C25[00000000]        neg dword [var1]
-    48 00000031 F71C25[00000000]        neg dword [var1]
+    32                                 [segment .text]
+    33                                 [global _start]
+    34                                 
+    35                                 _start:
+    36                                 
+    37                                 
+    38 00000000 4831C0                  xor rax, rax
+    39 00000003 4889C7                  mov rdi, rax
+    40 00000006 40B702                  mov dil, 0x2
+    41 00000009 48C7C6[00000000]        mov rsi, name
+    42 00000010 4831D2                  xor rdx, rdx
+    43 00000013 4883C208                add rdx, 8
+    44 00000017 48C7C001000000          mov rax, 1
+    45 0000001E 0F05                    syscall
+    46                                 
+    47                                 
+    48                                 
     49                                 
     50                                 
     51                                 
-    52                                 
-    53                                 
-    54                                 
-    55                                 
-    56 00000038 4831C0                  xor rax, rax
-    57 0000003B 4883C00E                add rax, 0xe
-    58 0000003F 48FFC0                  inc rax
-    59 00000042 4883E80E                sub rax, 0xe
-    60 00000046 48FFC8                  dec rax
-    61                                 
-    62                                 
-    63                                 
-    64                                 
+    52 00000020 48C70425[00000000]-     mov qword [idx], 0x1
+    53 00000020 01000000           
+    54 0000002C 488B0425[00000000]      mov rax, qword [idx]
+    55 00000034 FF24C5[00000000]        jmp [switch + rax*8]
+    56                                 .case0:
+    57 0000003B BBEFBEADDE              mov ebx, 0xdeadbeef
+    58 00000040 EB0C                    jmp .end
+    59                                 .case1:
+    60 00000042 BBBEBAFECA              mov ebx, 0xcafebabe
+    61 00000047 EB05                    jmp .end
+    62                                 .case2:
+    63 00000049 BBFE11ADD3              mov ebx, 0xd3ad11fe
+    64 0000004E EBFE                    jmp .end
     65                                 
-    66                                 
-    67                                 
+    66                                 .end
+    67 00000050 4831C0                  xor rax, rax
     68                                 
     69                                 
     70                                 
     71                                 
     72                                 
     73                                 
-    74                                 
-    75                                 
-    76                                 
-    77                                 
-    78                                 
-    79 00000049 B903000000              mov ecx, 0x3
-    80 0000004E 890C25[00000000]        mov dword [var1], ecx
-    81 00000055 89C8                    mov eax, ecx
-    82 00000057 F7E9                    imul ecx
-    83 00000059 0FAFC8                  imul ecx, eax
-    84 0000005C 6BC802                  imul ecx, eax, 2
+    74 00000053 31C9                    xor ecx, ecx
+    75 00000055 89C8                    mov eax, ecx
+    76 00000057 B904000000              mov ecx, 0x4
+    77                                 my_loop:
+    78 0000005C 4883C001                add rax, 0x1
+    79 00000060 E2F8                    loop my_loop
+    80                                 
+    81                                 
+    82                                 
+    83                                 
+    84                                 
     85                                 
     86                                 
     87                                 
@@ -92,55 +92,55 @@
     92                                 
     93                                 
     94                                 
-    95                                 
-    96 0000005F 8B0425[00000000]        mov eax, dword [var1]
-    97 00000066 6BC013                  imul eax, eax, 19
-    98 00000069 F73C25[00000000]        idiv dword [var1]
-    99 00000070 48890425[00000000]      mov [quot], rax
-   100 00000078 48891425[00000000]      mov [rem], rdx
-   101                                 
-   102                                 
+    95 00000062 BB03000000              mov ebx, 0x3
+    96 00000067 480FBA24DD[00000000]-     bt qword [data + 8*rbx], 2
+    97 00000067 02                 
+    98 00000071 0F92D2                  setc dl
+    99 00000074 480FBA2CDD[00000000]-     bts qword [data + 8*rbx], 1
+   100 00000074 01                 
+   101 0000007E 480FBA34DD[00000000]-     btr qword [data + 8*rbx], 0
+   102 0000007E 00                 
    103                                 
    104                                 
-   105                                 
-   106                                 
-   107                                 
-   108 00000080 48B8AAAAAAAAAAAAAA-     mov rax, 0xaaaaaaaaaaaaaaaa
-   109 00000080 AA                 
-   110 0000008A 48890425[00000000]      mov [var2], rax
-   111 00000092 48C7C0[00000000]        mov rax, var1
-   112 00000099 8B0425[00000000]        mov eax, [var1]
+   105 00000088 BB01000000              mov ebx, 0x1
+   106 0000008D B90F000000              mov ecx, 0xf
+   107 00000092 48C1E308                shl rbx, 0x8
+   108 00000096 48C1E108                sal rcx, 0x8
+   109                                 
+   110                                 
+   111 0000009A 48C1EB04                shr rbx, 0x4
+   112 0000009E 48C1F904                sar rcx, 0x4
    113                                 
    114                                 
-   115                                 
-   116                                 
+   115 000000A2 48C1C80A                ror rax, 10
+   116 000000A6 48C1C014                rol rax, 20
    117                                 
    118                                 
-   119 000000A0 48B8AAAAAAAAAAAAAA-     mov rax, 0xaaaaaaaaaaaaaaaa
-   120 000000A0 AA                 
-   121 000000AA 48C7C064000000          mov rax, 0x64
-   122 000000B1 48B8AAAAAAAAAAAAAA-     mov rax, 0xaaaaaaaaaaaaaaaa
-   123 000000B1 AA                 
-   124 000000BB B864000000              mov eax, 0x64
-   125                                 
-   126                                 
+   119 000000AA 48F7D0                  not rax
+   120                                 
+   121                                 
+   122 000000AD 4825FF000000            and rax, 0xff
+   123                                 
+   124                                 
+   125 000000B3 4883C801                or rax, 0x1
+   126 000000B7 480D00FF0000            or rax, 0xff00
    127                                 
    128                                 
-   129                                 
-   130 000000C0 48B8BBBBBBBBBBBBBB-     mov rax, 0xbbbbbbbbbbbbbbbb
-   131 000000C0 BB                 
-   132 000000CA 480FBE0425[03000000]      movsx rax, byte [name + 3]
-   133 000000D3 480FB71C25[00000000]      movzx rbx, word [arr2]
-   134 000000DC 48630C25[00000000]      movsxd rcx, dword [var1]
-   135 000000E4 90                      nop
+   129 000000BD 4831C0                  xor rax, rax
+   130 000000C0 48C7C034120000          mov rax, 0x1234
+   131 000000C7 4883F00F                xor rax, 0xf
+   132                                 
+   133                                 
+   134                                 
+   135                                 
    136                                 
    137                                 
    138                                 
    139                                 
-   140                                 
-   141                                 
-   142                                 
-   143                                 
+   140 000000CB 48C7C302000000          mov rbx, 0x2
+   141 000000D2 48F7DB                  neg rbx
+   142 000000D5 F71C25[00000000]        neg dword [var1]
+   143 000000DC F71C25[00000000]        neg dword [var1]
    144                                 
    145                                 
    146                                 
@@ -148,23 +148,122 @@
    148                                 
    149                                 
    150                                 
-   151                                 
-   152                                 
-   153 000000E5 B9EFBEADDE              mov ecx, 0xdeadbeef
-   154 000000EA B805000000              mov eax, 0x5
-   155 000000EF F7D8                    neg eax
-   156 000000F1 0F4CC1                  cmovl eax, ecx
+   151 000000E3 4831C0                  xor rax, rax
+   152 000000E6 4883C00E                add rax, 0xe
+   153 000000EA 48FFC0                  inc rax
+   154 000000ED 4883E80E                sub rax, 0xe
+   155 000000F1 48FFC8                  dec rax
+   156                                 
    157                                 
-   158 000000F4 C70425[00000000]10-     mov dword [var2], 0x10
-   159 000000F4 000000             
-   160 000000FF 8B0425[00000000]        mov eax, dword [var2]
-   161 00000106 83E802                  sub eax, 0x2
-   162 00000109 480F4EC1                cmovle rax, rcx
+   158                                 
+   159                                 
+   160                                 
+   161                                 
+   162                                 
    163                                 
    164                                 
    165                                 
    166                                 
-   167 0000010D 4831C0                  xor rax, rax
-   168 00000110 4883C03C                add rax, 60
-   169 00000114 48C7C710000000          mov rdi, 0x10
-   170 0000011B 0F05                    syscall
+   167                                 
+   168                                 
+   169                                 
+   170                                 
+   171                                 
+   172                                 
+   173                                 
+   174 000000F4 B903000000              mov ecx, 0x3
+   175 000000F9 890C25[00000000]        mov dword [var1], ecx
+   176 00000100 89C8                    mov eax, ecx
+   177 00000102 F7E9                    imul ecx
+   178 00000104 0FAFC8                  imul ecx, eax
+   179 00000107 6BC802                  imul ecx, eax, 2
+   180                                 
+   181                                 
+   182                                 
+   183                                 
+   184                                 
+   185                                 
+   186                                 
+   187                                 
+   188                                 
+   189                                 
+   190                                 
+   191                                 
+   192 0000010A 8B0425[00000000]        mov eax, dword [var1]
+   193 00000111 6BC013                  imul eax, eax, 19
+   194 00000114 99                      cdq
+   195 00000115 F73C25[00000000]        idiv dword [var1]
+   196 0000011C 48890425[00000000]      mov [quot], rax
+   197 00000124 48891425[00000000]      mov [rem], rdx
+   198                                 
+   199                                 
+   200                                 
+   201                                 
+   202                                 
+   203                                 
+   204                                 
+   205 0000012C 48B8AAAAAAAAAAAAAA-     mov rax, 0xaaaaaaaaaaaaaaaa
+   206 0000012C AA                 
+   207 00000136 48890425[00000000]      mov [var2], rax
+   208 0000013E 48C7C0[00000000]        mov rax, var1
+   209 00000145 8B0425[00000000]        mov eax, [var1]
+   210                                 
+   211                                 
+   212                                 
+   213                                 
+   214                                 
+   215                                 
+   216 0000014C 48B8AAAAAAAAAAAAAA-     mov rax, 0xaaaaaaaaaaaaaaaa
+   217 0000014C AA                 
+   218 00000156 48C7C064000000          mov rax, 0x64
+   219 0000015D 48B8AAAAAAAAAAAAAA-     mov rax, 0xaaaaaaaaaaaaaaaa
+   220 0000015D AA                 
+   221 00000167 B864000000              mov eax, 0x64
+   222                                 
+   223                                 
+   224                                 
+   225                                 
+   226                                 
+   227 0000016C 48B8BBBBBBBBBBBBBB-     mov rax, 0xbbbbbbbbbbbbbbbb
+   228 0000016C BB                 
+   229 00000176 480FBE0425[03000000]      movsx rax, byte [name + 3]
+   230 0000017F 480FB71C25[00000000]      movzx rbx, word [arr2]
+   231 00000188 48630C25[00000000]      movsxd rcx, dword [var1]
+   232 00000190 90                      nop
+   233                                 
+   234                                 
+   235                                 
+   236                                 
+   237                                 
+   238                                 
+   239                                 
+   240                                 
+   241                                 
+   242                                 
+   243                                 
+   244                                 
+   245                                 
+   246                                 
+   247                                 
+   248                                 
+   249                                 
+   250                                 
+   251                                 
+   252 00000191 B9EFBEADDE              mov ecx, 0xdeadbeef
+   253 00000196 B805000000              mov eax, 0x5
+   254 0000019B F7D8                    neg eax
+   255 0000019D 0F4CC1                  cmovl eax, ecx
+   256                                 
+   257 000001A0 C70425[00000000]10-     mov dword [var2], 0x10
+   258 000001A0 000000             
+   259 000001AB 8B0425[00000000]        mov eax, dword [var2]
+   260 000001B2 83E802                  sub eax, 0x2
+   261 000001B5 480F4EC1                cmovle rax, rcx
+   262                                 
+   263                                 
+   264                                 
+   265                                 
+   266 000001B9 4831C0                  xor rax, rax
+   267 000001BC 4883C03C                add rax, 60
+   268 000001C0 48C7C710000000          mov rdi, 0x10
+   269 000001C7 0F05                    syscall

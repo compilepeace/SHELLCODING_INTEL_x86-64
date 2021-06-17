@@ -13,9 +13,15 @@ quot    dq 0
 rem     dq 0
 var1    dd  1998                ; after assembling 'var1' will be replaced with an address
 var2    dq  4097
-name    db  "Abhinav", 0x0
-arr1    times 10 dq 1           ; array of 10 quad words initialized by with value 1
+name    db  "Abhinav", 0xa, 0x0
+arr1    times 10 dq 1           ; array of 10 quad words initialized with value 1
 arr2    times 5 dw  7           ; array of 5 words (2 bytes) initialized with value 7
+data    times 10 dq 5           ; array of 10 quad words initialized with value 3
+
+idx     dq  0x0                 ; index for - switch(idx)
+switch: dq  _start.case0        ; .case0 | .case1 | .case2 are local labels of _start
+        dq  _start.case1
+        dq  _start.case2
 
 
 segment .bss
@@ -36,6 +42,109 @@ _start:
     add rdx, 8          ; count = 8
     mov rax, 1          ; syscall number = 1
     syscall
+
+;----------------------------------------------------------------------------------------------------
+    ; BRANCHING & LOOPING
+    ; 
+    ; switch (var1)
+    ;
+    mov qword [idx], 0x1
+    mov rax, qword [idx]
+    jmp [switch + rax*8]        ; switch (idx)
+.case0:
+    mov ebx, 0xdeadbeef
+    jmp .end
+.case1:
+    mov ebx, 0xcafebabe
+    jmp .end
+.case2:
+    mov ebx, 0xd3ad11fe
+    jmp .end
+
+.end
+    xor rax, rax
+
+
+    ; for (I.E; T.C; M.E) { //body }
+    ; I.E; while (T.C) { //body; M.E }
+    ; do { //body; M.E} while (T.C)
+    ;
+    ; loop instruction - Implicitly decrements RCX and jmps to label until RCX == 0
+    ;                    It is 5 times slower than subtracting from RCX.
+    ;
+    xor ecx, ecx
+    mov eax, ecx
+    mov ecx, 0x4        ; iterate 4 times
+my_loop:
+    add rax, 0x1
+    loop my_loop        ; decrement RCX & evaluate RCX == 0
+
+    ; Array/String Instructions (REP)
+    ; Suffixed with b, w, d or q (1, 2, 4 or 8 bytes) to indicate size of array elements
+    ;
+    ; RCX - Count (string instructino to repreat number of times)
+    ; RAX - 
+    ; RSI - Source Index
+    ; RDI - Destination Index
+    ;
+    ; DF (Direction Flag)
+    ; If DF is 0 then the registers (RDI/RSI) are increased by the size of the data
+    ; item after each use. If DF is 1 then the registers are decreased after each use.
+    ;
+    ;
+    ; 1. Move
+    
+
+
+;----------------------------------------------------------------------------------------------------
+    ; BIT SHIFTING INSTRUCTIONS
+    ; 
+    ; - bt/bts/btr (bit test/set/reset instructions)
+    ;
+    ; - setc instruction (a part of set_ instructions for every flag in eflags)
+    ;   can be used to store value of the carry flag (CF) into a 8 bit register.
+    ;
+    ; bt instruction set the carry flag (CF) to the value of bit being tested.
+    ; bts sets the bit to 1
+    ; btr clears off the bit to 0.
+    ;
+    mov ebx, 0x3                        ; stores index into data array (i.e. 3rd index)
+    bt  qword [data + 8*rbx], 2         ; bit test (set CF if 3rd bit from right (of data[3]) is set to 1)
+    setc dl                             ; edx = tested bit (set edx=1 if CF is set)
+    bts qword [data + 8*rbx], 1         ; bit set (sets the 2nd bit of data[rbx] to 1)
+    btr qword [data + 8*rbx], 0         ; bit reset (clears off the 1st bit of data[rbx] to 0)
+
+    ; shift left | shift arithemetic left
+    mov ebx, 0x1
+    mov ecx, 0xf
+    shl rbx, 0x8        
+    sal rcx, 0x8        
+
+    ; shift right | shift arithemetic right
+    shr rbx, 0x4        ; high order bit is set to 0 (unsigned shift)
+    sar rcx, 0x4        ; high order bit is set to 1 (signed shift)
+
+    ; rotate instructions
+    ror rax, 10
+    rol rax, 20
+
+    ; bitwise not (~)
+    not rax             ; invert all bit positions in rax
+    
+    ; bitwise and (&)
+    and rax, 0xff       ; rax has only low 8-bits left of its value
+
+    ; bitwise or (|)
+    or  rax, 0x1        ; make rax an odd number
+    or  rax, 0xff00     ; set bits 15-8
+
+    ; XOR (^)
+    xor rax, rax        ; zero out rax | can be used as bit flipper too
+    mov rax, 0x1234
+    xor rax, 0xf        ; rax = 0x123b = 0001 0010 0011 1011
+
+;----------------------------------------------------------------------------------------------------
+
 
 ;----------------------------------------------------------------------------------------------------
     ; MATHEMATICAL INSTRUCTIONS
@@ -101,7 +210,7 @@ _start:
     mov     [rem], rdx          ; rdx is set to remainder
 
 
- ;----------------------------------------------------------------------------------------------------
+;----------------------------------------------------------------------------------------------------
 
 
 ;----------------------------------------------------------------------------------------------------
