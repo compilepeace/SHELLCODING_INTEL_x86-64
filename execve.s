@@ -14,10 +14,10 @@ _start:
 
 	/* execve ("a", NULL, NULL)  */
 	xor esi, esi	/* argv = NULL */
-	xor edx, edx	/* envp = NULL */
 	push 'a'
 	push rsp
 	pop rdi			/* prog = "a" */
 	push 59			/* syscall number */
 	pop rax
+	cdq				/* envp = NULL */
 	syscall

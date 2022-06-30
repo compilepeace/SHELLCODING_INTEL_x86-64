@@ -1,6 +1,6 @@
 .PHONY:	clean
 
-CFLAGS = -Wl,-N -nostdlib -static
+CFLAGS = -Wl,-N -nostdlib -static -g
 all: exit chmod_symlink execve execve_binsh harness 
 
 exit: exit.s
