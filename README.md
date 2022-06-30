@@ -15,8 +15,8 @@ Unpacking objects: 100% (74/74), done.
 ```
 
 
-##  USAGE
-To generate shellcode on your own just enter the `make` command to assemble into object code as bellow -
+##  BUILD
+Use `make` utility to build an executable binary (having name `*.elf`) and get raw shellcode bytes (as `*.raw`) -
 ```
 critical@d3ad:~SHELLCODING_INTEL_x86-64$ make
 gcc -Wl,-N -nostdlib -static exit.s -o exit.elf
@@ -40,7 +40,7 @@ unsigned char __execve_binsh_raw[] = {
 unsigned int __execve_binsh_raw_len = 23;
 ``` 
 
-Any suggestions to shellcode optimisation are welcomed, feel free to open up issues, cheers !
+Any suggestions to shellcode optimisation are welcome (feel free to open any issue, cheers!)
 
 You can also email me regarding any queries,<br>
 **NAME** : **ABHINAV THAKUR**<br>
