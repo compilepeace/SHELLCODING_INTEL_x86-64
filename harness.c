@@ -1,18 +1,38 @@
+#include <stdio.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include <string.h>
 
-int main ()
+/*
+__asm__ ( 
+			"movq $0xaabbccddaabbccdd, %rax\t\n"
+			"movq $0xaabbccddaabbccdd, %rdi\t\n"
+			"movq $0xaabbccddaabbccdd, %rsi\t\n"
+			"movq $0xaabbccddaabbccdd, %rdx\t\n"
+			"movq $0xaabbccddaabbccdd, %rcx\t\n"
+			"movq $0xaabbccddaabbccdd, %r8\t\n"
+			"movq $0xaabbccddaabbccdd, %r9\t\n"
+			"movq $0xaabbccddaabbccdd, %rbx\t\n"
+);
+*/
+unsigned char clobberContext[] = { 0x48, 0xB8, 0xDD, 0xCC, 0xBB, 0xAA, 0xDD, 0xCC, 0xBB, 0xAA, 0x48, 0xBF, 0xDD, 0xCC, 0xBB, 0xAA, 0xDD, 0xCC, 0xBB, 0xAA, 0x48, 0xBE, 0xDD, 0xCC, 0xBB, 0xAA, 0xDD, 0xCC, 0xBB, 0xAA, 0x48, 0xBA, 0xDD, 0xCC, 0xBB, 0xAA, 0xDD, 0xCC, 0xBB, 0xAA, 0x48, 0xB9, 0xDD, 0xCC, 0xBB, 0xAA, 0xDD, 0xCC, 0xBB, 0xAA, 0x49, 0xB8, 0xDD, 0xCC, 0xBB, 0xAA, 0xDD, 0xCC, 0xBB, 0xAA, 0x49, 0xB9, 0xDD, 0xCC, 0xBB, 0xAA, 0xDD, 0xCC, 0xBB, 0xAA, 0x48, 0xBB, 0xDD, 0xCC, 0xBB, 0xAA, 0xDD, 0xCC, 0xBB, 0xAA }; 
+
+int main () 
 {
-    void *code = mmap((void *)0x1337000, 0x1000, PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE|MAP_ANON, 0, 0);
-    read(0, code, 0x1000);
-	__asm__ ( 
-				"movq $0xaabbccddaabbccdd, %rax\t\n"
-				"movq $0xaabbccddaabbccdd, %rdi\t\n"
-				"movq $0xaabbccddaabbccdd, %rsi\t\n"
-				"movq $0xaabbccddaabbccdd, %rdx\t\n"
-				"movq $0xaabbccddaabbccdd, %rcx\t\n"
-				"movq $0xaabbccddaabbccdd, %r8\t\n"
-				"movq $0xaabbccddaabbccdd, %r9\t\n"
-	);
-    ((void(*)())code)();
+		/* Map 2 pages of memory (0x2000 bytes) @ 0x1337000 with RWX permissions */
+		void *code = mmap(	(void *)0x1337000, 0x2000, 
+						PROT_READ|PROT_WRITE|PROT_EXEC, 
+						MAP_PRIVATE|MAP_ANON, 0, 0);
+
+		/* copy assembled instructions to clobber CPU state @ code */
+		memcpy (code, clobberContext, sizeof(clobberContext));	
+
+		/* read shellcode from STDIN and place it after clobber instructions */
+		size_t read_bytes = read(0, code+sizeof(clobberContext), 0x1000);
+
+		fprintf (stderr, "Shellcode (%ld) base @: %p\n", 
+						read_bytes, code+sizeof(clobberContext));
+
+		/* transfer code flow to shellcode */
+		((void(*)())code)();
 }

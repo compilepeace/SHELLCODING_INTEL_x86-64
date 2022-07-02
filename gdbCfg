@@ -1,0 +1,13 @@
+display/7i $rip
+display/x $rax
+display/x $rdi
+display/x $rsi
+display/x $rdx
+display/x $rcx
+display/x $r8
+display/x $r9
+display/x $rbx
+display/x $rbp
+display/10xg $rsp
+b *_start
+r
