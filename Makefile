@@ -1,7 +1,15 @@
 .PHONY:	clean
 
 CFLAGS = -Wl,-N -nostdlib -static -g
-all: exit chmod_symlink setuid_execve_binsh execve execve_binsh harness 
+all: setuid_reverse_shell reverse_shell exit chmod_symlink setuid_execve_binsh execve execve_binsh harness 
+
+setuid_reverse_shell: setuid_reverse_shell.s
+	gcc ${CFLAGS} $< -o $@.elf
+	objcopy --dump-section .text=$@.raw $@.elf
+
+reverse_shell: reverse_shell.s
+	gcc ${CFLAGS} $< -o $@.elf
+	objcopy --dump-section .text=$@.raw $@.elf
 
 exit: exit.s
 	gcc ${CFLAGS} $< -o $@.elf

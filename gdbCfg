@@ -10,4 +10,4 @@ display/x $rbx
 display/x $rbp
 display/10xg $rsp
 b *_start
-r
+run
