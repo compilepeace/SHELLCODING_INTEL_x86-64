@@ -42,4 +42,4 @@ harness: harness.c
 	sudo chmod u+s  $@.elf
 	
 clean:
-	rm -f *.elf *.raw
+	rm -f *.elf *.raw *.o
