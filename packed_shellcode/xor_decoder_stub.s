@@ -3,7 +3,7 @@
 Author: Abhinav Thakur
 File: xor_decoder_stub.s
 Compile:        $ gcc -nostdlib -static xor_decoder_stub.s -o xor_decoder_stub.elf
-Dump shellcode :$ objcopy --dump-section .text=xor_decoder_stub.raw ./xor_decoder_stub.elf
+Dump shellcode  $ objcopy --dump-section .text=xor_decoder_stub.raw ./xor_decoder_stub.elf
 
 */
 
@@ -15,8 +15,8 @@ _start:
 
 main:
         /*
-                r8  = address of decodeMe (encrypted shellcode)
-                eax = len (xor_0xe_shellcode)
+                r8  = address of decodeMe (encoded shellcode)
+                eax = len (size of encoded shellcode)
                 ecx = i (counter)
         */
         pop r8
@@ -26,7 +26,7 @@ main:
 
         /*
                 for (ecx = 0; ecx < eax; ++ecx)
-                        [xor_0xe_shellcode + ecx] ^= 0xe
+                        [decodeMe + ecx] ^= KEY
         */
 again:
         cmp ecx, eax
