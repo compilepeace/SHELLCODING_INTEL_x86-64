@@ -1,10 +1,13 @@
 .PHONY:	clean
 
-CFLAGS = -g 
-all: reverse_shell
+CFLAGS = -g -nostdlib -static
+all: inline_syscalls reverse_shell
+
+inline_syscalls: inline_syscalls.c
+	gcc ${CFLAGS} $< -o $@.elf
 
 reverse_shell: reverse_shell.c
-	gcc ${CFLAGS} $< -o $@.elf
+	gcc -g $< -o $@.elf
 
 clean:
 	rm -f *.elf 
