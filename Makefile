@@ -37,7 +37,7 @@ execve_binsh: execve_binsh.s
 
 
 harness: harness.c
-	gcc -z execstack -fno-stack-protector $< -o $@.elf
+	gcc -g -z execstack -fno-stack-protector $< -o $@.elf
 	sudo chown root $@.elf
 	sudo chmod u+s  $@.elf
 	

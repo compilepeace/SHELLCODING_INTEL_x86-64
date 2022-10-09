@@ -1,9 +1,11 @@
 
 /*
-
 Author: Abhinav Thakur
 File:   inline_syscalls.c
 Compile : gcc -g -nostdlib -static ./inline_syscalls.c 
+
+Description: Extract the final TEXT section of final 
+program binary to get position independent program. 
 
 */
 
