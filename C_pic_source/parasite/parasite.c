@@ -31,13 +31,14 @@ void main()
    char name[1000];
    x_read (1, name, 1000);
    x_write (1, name, 1000);
-   int fd = x_open("/etc/passwd", O_RDONLY, 0);
    
-   char passwd[1000000];
-   x_read (fd, passwd, 1000000);
-   x_write (1, passwd, 1000000);
 
-
+   const char target[] = "/etc/passwd";
+   int fd = x_open(target, O_RDONLY, 0);
+   
+	char passwd[100000];
+   x_read (fd, passwd, 100000);
+   x_write (1, passwd, 100000);
    
    x_exit(5);
 }

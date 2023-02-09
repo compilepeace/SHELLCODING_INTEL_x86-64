@@ -29,22 +29,24 @@ unsigned char clobberContext[] = {
   0xbb, 0xaa, 0xdd, 0xcc, 0xbb, 0xaa
 };
 
-int main () 
+int main (int argc, char **argv) 
 {
-		/* Map 2 pages of memory (0x2000 bytes) @ 0x1337000 with RWX permissions */
-		void *code = mmap(	(void *)0x1337000, 0x2000, 
-						PROT_READ|PROT_WRITE|PROT_EXEC, 
-						MAP_PRIVATE|MAP_ANON, 0, 0);
+	fprintf (stderr, "Usage: %s < <pic.bin>\n\n", argv[0]);
 
-		/* copy assembled instructions to clobber CPU state @ code */
-		memcpy (code, clobberContext, sizeof(clobberContext));	
+	/* Map 2 pages of memory (0x2000 bytes) @ 0x1337000 with RWX permissions */
+	void *code = mmap(	(void *)0x1337000, 0x2000, 
+					PROT_READ|PROT_WRITE|PROT_EXEC, 
+					MAP_PRIVATE|MAP_ANON, 0, 0);
 
-		/* read shellcode from STDIN and place it after clobber instructions */
-		size_t read_bytes = read(0, code+sizeof(clobberContext), 0x1000);
+	/* copy assembled instructions to clobber CPU state @ code */
+	memcpy (code, clobberContext, sizeof(clobberContext));	
 
-		fprintf (stderr, "Shellcode (%ld) base @: %p\n", 
-						read_bytes, code+sizeof(clobberContext));
+	/* read shellcode from STDIN and place it after clobber instructions */
+	size_t read_bytes = read(0, code+sizeof(clobberContext), 0x1000);
 
-		/* transfer code flow to shellcode */
-		((void(*)())code)();
+	fprintf (stderr, "Shellcode (%ld) base @: %p\n", 
+					read_bytes, code+sizeof(clobberContext));
+
+	/* transfer code flow to shellcode */
+	((void(*)())code)();
 }
