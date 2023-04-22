@@ -1,5 +1,21 @@
+/*
+
+Author: Abhinav Thakur
+File:   harness.c
+Compile:
+	$ arm-linux-gnueabi-gcc -g -z execstack -fno-stack-protector $< -o $@.elf
+	$ sudo chown root $@.elf
+	$ sudo chmod u+s  $@.elf
+Run:
+	$ (cat ./execve_binsh.raw; cat) | ./harness.elf
+	$ ./harness.elf < ./setuid_reverse_shell.raw
+
+*/
+
 #include <stdio.h>
 #include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <string.h>
 
@@ -31,7 +47,7 @@ unsigned char clobberContext[] = {
 
 int main (int argc, char **argv) 
 {
-	fprintf (stderr, "Usage: %s < <pic.bin>\n\n", argv[0]);
+	fprintf (stdout, "\nUsage: %s < <pic.raw>\n\n", argv[0]);
 
 	/* Map 2 pages of memory (0x2000 bytes) @ 0x1337000 with RWX permissions */
 	void *code = mmap(	(void *)0x1337000, 0x2000, 
@@ -44,9 +60,37 @@ int main (int argc, char **argv)
 	/* read shellcode from STDIN and place it after clobber instructions */
 	size_t read_bytes = read(0, code+sizeof(clobberContext), 0x1000);
 
-	fprintf (stderr, "Shellcode (%ld) base @: %p\n", 
+	fprintf (stdout, "Shellcode (%ld) base @: %p\n", 
 					read_bytes, code+sizeof(clobberContext));
 
-	/* transfer code flow to shellcode */
-	((void(*)())code)();
+	pid_t pid = fork();
+	if (pid < 0){
+		// error handling
+		fprintf (stderr, "[-] unable to fork() child process, exiting...\n");
+		return 1;
+	}
+	if (pid == 0){
+		// child block: execute shellcode
+		fprintf (stdout, "[+] child block executing shellcode, pid: %d\n", getpid());
+		fprintf (stdout, "\n-x-x-x-x-x-x- Executing shellcode as child process -x-x-x-x-x-x-\n\n");
+		((void(*)())code)();
+	}
+	else {
+		// parent block: get shellcode exit status
+		fprintf (stdout, "[+] parent patiently waiting for child to finish, pid: %d\n", getpid());
+		int wstatus;
+		if (waitpid(pid, &wstatus, 0) < 0){
+			fprintf (stdout, "[-] failed to wait on child process, exiting...\n");
+			return 1;
+		}
+		fprintf (stdout, "\n-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-\n\n");
+		if (WIFEXITED(wstatus)){
+			fprintf (stdout, "[+] shellcode returned: %d\n", WEXITSTATUS(wstatus));
+		}
+		else{
+			fprintf (stdout, "[-] shellcode terminated abruptly, i.e. didn't invoke _exit(2)!\n");
+		}
+	}
+
+	return 0;
 }
