@@ -26,7 +26,9 @@ String defined above to eliminate NULL byte generation (as relative address will
 offset to RIP, therefore will contain 0xffff... instead of 0x0000...
 */
 msg:
-.asciz "compilepeace was here x_x\n"
+.asciz "compilepeace was here x_x\n"		/* ask assembler to add NULL @ endof byte stream */
+msg_end:
+.set msg_len, msg_end-msg
 
 hello:
 	/* write (1, "compilepeace was here x_x\n", 26);  */
@@ -34,8 +36,8 @@ hello:
 	pop rdi
 	// RIP relative addressing (gas syntax)
 	lea rsi, [msg+rip]	/* rsi = msg; quite intuitive in NASM syntax : [rel msg] */
-	push 26			
-	pop rdx				/* rdx = 26 (msg length) */
+	push msg_len			
+	pop rdx				/* rdx = msg length (27) */
 	push 1
 	pop rax				/* rax = 1 (syscall number) */
 	syscall
@@ -50,6 +52,7 @@ hello:
 /*
 
 Alternatively, below is how one can use stack to store & refer (1) to msg data string.
+size is more than other 2 techniques but guaranteed to generate NO NULL chars.
 
 	// write (1, "compilepeace was here x_x\n", 26); 
 	xor rdi, rdi

@@ -13,10 +13,10 @@ Dump shellcode :
 Run            :
 	$ ./xxx.elf
 
-SYSCALL conventions for ARM
-syscall number => r7
-parameters     => r0, r1, r2, r3, r4, r5
-return value   => r0
+~~ SYSCALL conventions for ARM32
+move parameters into => r0, r1, r2, r3, r4, r5
+move syscall number  => r7
+find return value in => r0
 
 */
 
@@ -27,8 +27,9 @@ _start:
 	
 	/* scramble all registers */
 	mov r12, #0xff
+
+/*
 	mov r0, r12, lsl #24
-	mov r0, #0x11223344
 	mov r1, #0x11223344
 	mov r2, #0x11223344
 	mov r3, #0x11223344
@@ -41,4 +42,4 @@ _start:
 	mov r10, #0x11223344
 	mov r11, #0x11223344
 	mov r12, #0x11223344
-
+*/

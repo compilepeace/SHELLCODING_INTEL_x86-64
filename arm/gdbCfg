@@ -1,0 +1,4 @@
+#-x-x-x- THIS IS AN AUTO-GENERATED FILE -x-x-x-
+
+set architecture arm
+gef-remote --qemu-user --qemu-binary ./msg_to_stdout.elf localhost 1234
