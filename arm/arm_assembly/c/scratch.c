@@ -13,5 +13,5 @@ int vulnerable (char *source, int source_length)
 
 int main (int argc, char **argv)
 {
-	func (argv[1], strlen(argv[1])); 
+	vulnerable (argv[1], strlen(argv[1])); 
 }

@@ -33,8 +33,9 @@ _start:
 	bx r3				// branch to thumb mode
 
 	.code 16			// THUMB instructions start
-	add r1, pc, #16		// error if immediate value is #6 instead of #8 (imm => powers of 2 ? )
 	mov r7, #4			// syscall number
+	add r1, pc, #16		// error if immediate value is #6 instead of #8 (imm => powers of 2 ? )
+	mov r7, r7
 	mov r0, #1
 	mov r2, #msg_len
 	eor r3, r3, r3
@@ -47,7 +48,6 @@ _start:
 	svc #1
 
 // CITE:
-// while (assembling+linking) with GCC rather than (as+ld)
 // seems like the data string being reffered is falling @ (msg_address % 4) == 0,
 // it would be referenced find, else the assembler would miscalculate (round it off to lowest
 // multiple of 4) the PC-relative addressing being performed.
@@ -55,8 +55,8 @@ _start:
 // check setuid_binsh_execve.s
 msg:
 .ascii "compilepeace was here x_x\nXX"
-msgEnd:
-.set msg_len, msgEnd-msg
+msg_end:
+.set msg_len, msg_end-msg
 .align
 
 /*

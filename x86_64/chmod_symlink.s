@@ -8,7 +8,7 @@ Run            :$ ./chmod_symlink.elf
 
 Prerequisite:
 Create a symbolic link of file you wish to be "RWX" accessible to the world.
-$ ln -s /file a
+$ ln -s /<any_file_path> a
 
 */
 

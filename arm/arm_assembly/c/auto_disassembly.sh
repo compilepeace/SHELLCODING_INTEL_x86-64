@@ -88,7 +88,7 @@ fi
 TARGET=$(basename "$1" | sed -s 's/[.].*$//g')		# remove file extention (if provided)
 OBJDUMP="arm-linux-gnueabi-objdump"
 SLEEP_SECONDS=0
-echo -e '[+] monitoring now => $TARGET.c\n'
+echo -e "[+] monitoring now => $TARGET.c\n"
 
 # call main logic
 main "$TARGET"
